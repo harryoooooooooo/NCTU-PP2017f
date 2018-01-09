@@ -3,33 +3,28 @@
 #include<string>
 #include<vector>
 using namespace std;
+using ull = unsigned long long;
 
 vector<int> raw;
-vector<bool> stk;
 
 int myabs(int x){
     return max(x, -x);
 }
 
-bool test(){
+bool getbool(ull s, int r){
+    if (s & (1llu << myabs(r))) return true;
+    return false;
+}
+
+bool test(ull s){
     bool ret = true;
     for (size_t i = 0; i < raw.size(); i+=3){
         bool tmp = false;
         for (size_t j = 0; j < 3; j++)
-            tmp |= (stk[myabs(raw[i+j])] ^ (raw[i+j] < 0));
+            tmp |= (getbool(s, raw[i+j]) ^ (raw[i+j] < 0));
         ret &= tmp;
     }
     return ret;
-}
-
-bool dfs(size_t i = 1){
-    if (i == stk.size())
-        return test();
-    stk[i] = false;
-    if (dfs(i+1)) return true;
-    stk[i] = true;
-    if (dfs(i+1)) return true;
-    return false;
 }
 
 int main (){
@@ -37,13 +32,20 @@ int main (){
     cin >> n >> m;
     n*=3;
     raw.resize(n);
-    stk.resize(m+1);
     for (int i=0;i<n;i++)
         cin >> raw[i];
-    bool found = dfs();
+    bool found = false;
+    ull s;
+    for (s = 0; s < (1llu<<m); s++){
+        if (test(s<<1)){
+            found = true;
+            break;
+        }
+    }
+    s <<= 1;
     if (!found) cout << "No satisfy!" << endl;
     else {
-        for (size_t i = 1; i < stk.size(); i++)
-            cout << i << " := " << (stk[i]?"true":"false") << endl;
+        for (int i = 1; i <= m; i++)
+            cout << i << " := " << ((s&(1llu<<i))?"true":"false") << endl;
     }
 }
