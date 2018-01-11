@@ -90,7 +90,7 @@ bool dfs(int i, int& nsol, vector<int>& cnt, vector<bool>& val, vector<vector<ye
 
     val[i] = false;
     do_set(i, false, nsol, cnt, ad);
-    if (!mailbox.put(i+1, nsol, cnt, val))
+    if (nsol<30 || !mailbox.put(i+1, nsol, cnt, val))
         if (dfs(i+1, nsol, cnt, val, ad)) return true;
     do_reset(i, nsol, cnt, ad);
 
